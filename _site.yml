@@ -1,0 +1,11 @@
+name: "conners-website"
+output_dir: "."
+navbar:
+  title: "Conners Website"
+  left:
+  - text: "Home"
+    href: index.html
+  - text: "About Me"
+    href: about.html
+  - text: "Song Clustering"
+    href: songclustering.html
