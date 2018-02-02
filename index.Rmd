@@ -1,0 +1,13 @@
+---
+title: "Conner Shoop's Website"
+author: "Conner Shoop"
+date: "2/2/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+ 
+Welcome to my page.  I'm Conner Shoop and here is a list of different projects I've been working on in R.
+
