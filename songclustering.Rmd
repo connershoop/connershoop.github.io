@@ -1,0 +1,245 @@
+---
+title: "Song Data to Term Frequency Inverse Document Matrix"
+output: html_document
+---
+After reading this case study I would highly recommend reading "Text Mining in R".  This is available online for free.  It gives an in depth overview of many of the methods I will be using.   
+
+In this case study we examine the lyrics of top songs by popular artists, which is contained in a datafile found on Kaggle. We will need some packages installed as well.
+```{r packages, message=FALSE}
+library(readr)
+library(tidytext)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(SnowballC)
+library(heatmaply)
+library(wordcloud)
+```
+
+So, first we read our csv songdata file and make a data frame with columns  artists and lyrics.  In our data frame doc_article we name the artist column "document", and song column "article".  We call artists document because it keeps our code general in the case it one day finds other use.  Just remember, for this example document = artist.
+```{r, message=FALSE}
+data <- read_csv("songdata.csv")
+doc_article <- data_frame(document = data[[1]], article = data[[4]])
+```
+There are some words we wish to be ignored in our analysis, in the tidyversethese are called stop words and they include words like "the" and "and" etc.  They are called stop_words.  We write some code to add our own stop words for this song data, "chorus" and "verse", to the stop words stop_words, from the tidyverse. 
+```{r stop words, message=FALSE}
+custom_stop_words <- c("chorus", "verse")
+custom_stop_words <- bind_rows(data_frame(word = custom_stop_words,
+                                            lexicon = c("custom")),
+                                 stop_words)
+```
+Next, we want to make our data table, doc_article, into a new data table that will have artists in one column and individual words by that artist in another. We do this and call the new data table doc_term
+```{r unnest, message=FALSE}
+doc_term <- doc_article %>%
+  unnest_tokens(word, article)  %>%
+  anti_join(custom_stop_words)
+```
+If you're wondering what `%>%` is, it is a convenient way to pull out the first argument of a function, so you don't drown yourself in brackets.  This is what the above would look like without `%>%`
+```{r unnest complex, message=FALSE, echo=FALSE}
+doc_term <- anti_join(unnest_tokens(doc_article, word, article), custom_stop_words)
+```
+So, what did we do?  `Unnest_tokens()` takes doc_article and makes all the strings in the article column into individual words.  `anti_join()` gets rid of all individual words that match with any of our custom_stop_words.  Next we get rid of all symbols and stem our words. We use two methods, one using  `regex` to get rid of symbols and another using `grep` to get rid of all terms containing numbers
+```{r symbols stem, message=FALSE}
+#regex method
+unnest_reg <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))"
+doc_term <- doc_term %>%
+  unnest_tokens(word, word, token = "regex", pattern = unnest_reg) %>%
+  filter(!word %in% stop_words$word,
+         str_detect(word, "[a-z]"))
+
+#grep method
+toMatch <- c("0","1", "2", "3","4", "5", "6","7", "8", "9")
+matches <- as.data.frame(grep(paste(toMatch,collapse="|"), 
+                          doc_term$word, value=TRUE)) 
+colnames(matches) <- c("word")
+doc_term <- doc_term %>%
+  anti_join(matches)
+
+#make lower case
+doc_term$word <- tolower(doc_term$word)
+
+#stem words
+doc_term <- doc_term %>%
+  mutate(word = wordStem(word))
+```
+
+Stemming words takes words like "birdies" and "birds" and makes them both into "bird".  This will help the rest of our analysis.  How about we take an artist and make a wordcloud of their most common lyrics.  (after removing stop words and stemming the words of course)  
+
+```{r wordcloud, message=FALSE}
+counter <- doc_term %>%
+  group_by(document) %>%
+  count(word)
+counter <- counter[grep("Grateful Dead", counter$document), ]
+wordcloud(counter$word, counter$n, max.words = 100)
+```
+Wow, this is fun.  Grateful Dead seems to say things along the line of "Love my baby home by the river time".
+Next, we want to make a new column now, frequency.  This column will be a numeric representing the number of times a word appears for a document divided by the total words for that document  So, of course, we find those two things.
+```{r tot_words, message=FALSE}
+document_words <- doc_term %>%
+  group_by(document) %>%
+  count(word, sort=TRUE)
+total_words <-doc_term %>%
+  group_by(document) %>%
+  summarise(total=n())
+```
+Next we join document_words and total_words.  Total_words has waaaaay less rows than document_words, so how can we join them.  Well,  `left_join()` will duplicate total_words as many times as needed to make up for the lack of rows, as long as the values in the document column of total_words make a basis for the values in the document column of document_words.  
+```{r frequency, message=FALSE}
+  frequency <- left_join(document_words,total_words) %>%
+    mutate(freq=n/total)
+```
+Once these are joined, we have a data frame that has columns like this. 1)'document', 2)'words', 3)'total'(number of words per document), 4)'n'(number of times that word appears per document).  We create a new column with `mutate()` which we called freq and is n/total.  By most standards this is called the 'term frequency' and it is what we continue our analysis with... for now.  I also want to get rid of any document with less than 1000 words because that is the minimum sample size I am comfortuable could reasonably represent the artist.
+```{r reduce, message=FALSE}
+ frequency <- frequency[frequency[,"total"]>1000,]
+```
+\bigbreak
+Now that we have frequency of each word, we can make a terf frequency document matrix which will have columns as all the documents and rows as each word.  The matrix will be full of all the frequencies each word appears in each document, and considering all artists do not use all words in their songs, there will be a lot of 0's.
+```{r tfdm, message=FALSE}
+tfdm <- frequency %>%
+  select(document, word, freq) %>%
+  spread(document, freq, fill=0)
+```
+
+Since this matrix is most likely to be very sparse, lets remove some rows.  More specifically lets remove all rows that less than x percent are not zero.  We define commonality as x/100 and remove all rows that less than 3% are not zeros. (97% sparse)
+
+```{r make less sparse, message=FALSE}
+commonality=0.03
+tfdm <- tfdm[ rowSums(tfdm > 0) >= commonality*ncol(tfdm), ]
+```
+
+Now we have a pretty convenient matrix which I call a ter, frequency document matrix. This is very similar to a document term matrix, something used widely in statistical text analysis.  So, lets make a function.  I want to find how similar two documents are to eachother.  It is as simple as taking a dot product between two document columns.  We also need to normalize this number, by adding together the two doucument columns dotted with themselves, and taking the square root of this number. We will make our function called `cos_sim()`
+
+```{r cos_sim, message = FALSE}
+cosine_sim <- function(document1,document2,tfdm){
+    X <- tfdm[[document1]]
+    Y <- tfdm[[document2]]
+    cos <-sum(X*Y)/sqrt((sum(X^2))*(sum(Y^2)))
+    return(cos)
+  }
+```
+
+Now we can find the similarity between two artists.  Lets see an example
+```{r cos_sim example}
+cosine_sim("Johnny Cash","Grateful Dead",tfdm)
+cosine_sim("Johnny Cash","Insane Clown Posse",tfdm)
+```
+Surprise surprise, Johnny Cash is more similar to the Grateful Dead than he is to the Insane Clown Posse.  This verifies that our method isn't entirely random, not that it works well.  There are far to many factors that that could attribute to lyrics used in a song.  However, lets keep going with this method none the less. Lets make a matrix that has columns and rows labled as the documents and full the results of `cos_sim()` for corresonding artists for that position in the matrix.  We will only have to fill this matrix up in the upper triangular.  We will repeat this upper triangular in the lower triangular by adding the transverse.  There will be an identity matrix of 0's through our matrix as well.
+```{r sim_matrix example, message=FALSE, cache=TRUE}
+sim_matrix <- function(tfdm){
+    documents <- colnames(tfdm)[-1]
+    n <- length(documents)
+    sim <- matrix(0,n,n)
+    for (i in 1:(n-1)){
+      for (j in (i+1):n){
+        sim[i,j] <- cosine_sim(documents[i],documents[j],tfdm)
+      }
+    }
+    colnames(sim) <- colnames(tfdm)[-1]
+    rownames(sim) <- colnames(tfdm)[-1]
+    sim <- sim+t(sim)
+    return(sim)
+}
+sim <- sim_matrix(tfdm)
+```
+Now we have our document vs document similarity matrix which we simply call sim. Lets see what the most similar artists are.
+```{r sim, warning=FALSE, message=TRUE, cache=TRUE}
+heatmaply(sim ,k_col = 10, k_row = 10,
+          labRow = NA,labCol = NA,
+          colors = Reds(5)) %>%
+  layout(margin = list(l = 20, b = 20))
+```
+`This function uses a k clustering method to cluster similar artists  along an axis.`
+
+Play around with this plot a bit, explore the clusters in the bottom left.  It has worked pretty well but I'd like to go back and settle a score with one of our methods we used. Lets take a trip back up this case study. Go back to the frequency data table we made that shows how frequent words are for each document and take a look and see what terms appear most.
+```{r most frequent}
+frequency  %>%
+  arrange(desc(freq))
+```
+It looks like the most frequent word is 'la' by Sam Smith.  But also we see Sam Smith only has a total of 145 words.  What if Sam Smith just sang la in a few songs and that happened to be his top few songs and also the only one for Zed in this data set? This is one problem that will lead us to explore other ways.  So remember way back when, when we made a new column of our data frame called 'freq' and I said this was the 'term frequency', or the number of words per document divided by the total words per document.  It turns out this is a pretty archaic way to understand how words appear in our documents.  Wikapedia is a great resource for different ways to analyze text, https://en.wikipedia.org/wiki/Tf–idf, check in the definition section.  
+\bigbreak
+Once you've read your fill keep reading.  We are going to try this again but instead of using term frequency, we are going to use term frequency inverse document frequency (tf_idf).  The tidyverse has a function `bind_tf_idf`, which can take our document_words data frame from earlier and turn it into a tf_idf for us.
+
+```{r tf_idf, message=FALSE}
+tf_idf <- document_words %>% bind_tf_idf(word,document,n)
+```
+Now lets see which words have the highest term frequency times inverse document frequency.
+```{r tf_idf desc, message=TRUE}
+tf_idf <- tf_idf %>%
+   arrange(desc(tf_idf))
+```
+I am liking this method already because we no longer have common words like 'love' that will determine how similar documents are to eachother. It is the strange words that are uncommon and appearing multiple times in one document that dominate similarity now. I never thought I'd want to lose the love, but I guess it happens to the best of us.  Lets make a term frequency times inverse document frequency document matrix (tf_idfm), in the same way we made a tfdm. Also lets get rid of more than 97% sparse rows.
+```{r ttf_idfdm, message=FALSE}
+tf_idfdm <- tf_idf %>%
+  select(document, word, tf_idf) %>%
+  spread(document, tf_idf, fill=0)
+commonality=0.03
+tf_idfdm <- tf_idfdm[ rowSums(tf_idfdm > 0) >= commonality*ncol(tf_idfdm), ]
+```
+```
+Now for our patented Johnny Cash/Grateful Dead/Insane Clown Posse verification step
+```{r cos_sim tf_idfdm example}
+cosine_sim("Johnny Cash","Grateful Dead",tf_idfdm)
+cosine_sim("Johnny Cash","Insane Clown Posse",tf_idfdm)
+```
+Seems to work well, although not as big a difference between these as our last method.  Next, literally repeating our previous analysis we make a sim matrix and apply `heatmaply`.
+
+Now we have our document vs document similarity matrix which we simply call sim. Lets see what the most similar artists are.
+```{r sim tf_idfdm, warning=FALSE, message=TRUE, cache=TRUE}
+sim <- sim_matrix(tf_idfdm)
+heatmaply(sim ,k_col = 10, k_row = 10,
+          labRow = NA,labCol = NA,
+          colors = Reds(5)) %>%
+  layout(margin = list(l = 20, b = 20))
+```
+We see rappers in the bottom left, and christian music in the top right.  
+
+Here is a function that will take a document article data frame and turn it into a tf_idfdm.
+```{r function, cache=TRUE, message=FALSE}
+make_tf_idfm <- function(doc_article, custom_stop_words=c(""), commonality=0.03){
+
+  custom_stop_words <- bind_rows(data_frame(word = custom_stop_words,
+                                            lexicon = c("custom")),
+                                 stop_words)
+                                 
+  doc_term <- doc_article %>%
+    unnest_tokens(word, article)  %>%
+    anti_join(custom_stop_words)
+
+  unnest_reg <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))"
+
+  doc_term <- doc_term %>%
+    unnest_tokens(word, word, token = "regex", pattern = unnest_reg) %>%
+    filter(!word %in% stop_words$word,
+           str_detect(word, "[a-z]"))
+
+  toMatch <- c("0","1", "2", "3","4", "5", "6","7", "8", "9")
+  matches <- as.data.frame(grep(paste(toMatch,collapse="|"),
+                          doc_term$word, value=TRUE))
+  colnames(matches) <- c("word")
+  doc_term %>%
+    anti_join(matches)
+
+  doc_term$word <- tolower(doc_term$word)
+
+
+  doc_term <- doc_term %>%
+    mutate(word = wordStem(word))
+
+  document_words <- doc_term %>%
+    group_by(document) %>%
+    count(word, sort=TRUE)
+  tf_idf <- document_words %>% bind_tf_idf(word,document,n)
+
+  tf_idfdm <- tf_idf %>%
+    select(document, word, tf_idf) %>%
+    spread(document, tf_idf, fill=0)
+  tf_idfdm <- tf_idfdm[ rowSums(tf_idfdm > 0) >= commonality*ncol(tf_idfdm), ]
+  
+  return(tf_idfdm)
+}
+```
+
+
+
+
+
+

@@ -9,3 +9,5 @@ navbar:
     href: about.html
   - text: "Song Clustering"
     href: songclustering.html
+  - text: "Soc119Tweets"
+    href: Soc119Tweets.html

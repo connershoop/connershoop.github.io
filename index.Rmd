@@ -1,7 +1,7 @@
 ---
 title: "Conner Shoop's Website"
 author: "Conner Shoop"
-date: "2/2/2018"
+date: "1/2/2018"
 output: html_document
 ---
 
@@ -9,5 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
  
-Welcome to my page.  I'm Conner Shoop and here is a list of different projects I've been working on in R.
-
+![Me and Stephen Sheetz hanging out in Mavora Lakes, New Zealand](NewZealandHut.jpg)
+ 
+Welcome to my page.  I'm Conner Shoop.  I like working with large data sets from Kaggle and displaying findings in an easy-to-understand, visual way. I have worked on a few independent projects.  You can view and here on my github page. 

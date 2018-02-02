@@ -1,0 +1,15 @@
+base
+readr
+tidytext
+dplyr
+stringr
+tidyr
+SnowballC
+ggplot2
+plotly
+viridisLite
+viridis
+heatmaply
+RColorBrewer
+wordcloud
+bindrcpp
