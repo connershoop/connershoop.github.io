@@ -6,11 +6,11 @@ navbar:
   left:
   - text: Home
     href: index.html
-  - text: More
-    icon: fa-gear
+  - text: About Me
+    href: about.html
+  - text: Projects
+    icon: ion_wrench
     menu:
-    - text: About Me
-      href: about.html
     - text: Song Clustering
       href: songclustering.html
     - text: Soc119Tweets
