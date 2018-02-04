@@ -9,7 +9,7 @@ navbar:
   - text: About Me
     href: about.html
   - text: Projects
-    icon: ion_wrench
+    icon: glyphicon-wrench
     menu:
     - text: Song Clustering
       href: songclustering.html
