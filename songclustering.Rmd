@@ -2,6 +2,9 @@
 title: "Song Data to Term Frequency Inverse Document Matrix"
 output: html_document
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
 After reading this case study I would highly recommend reading "Text Mining in R".  This is available online for free.  It gives an in depth overview of many of the methods I will be using.   
 
 In this case study we examine the lyrics of top songs by popular artists, which is contained in a datafile found on Kaggle. We will need some packages installed as well.
@@ -92,7 +95,7 @@ Once these are joined, we have a data frame that has columns like this. 1)'docum
  frequency <- frequency[frequency[,"total"]>1000,]
 ```
 \bigbreak
-Now that we have frequency of each word, we can make a terf frequency document matrix which will have columns as all the documents and rows as each word.  The matrix will be full of all the frequencies each word appears in each document, and considering all artists do not use all words in their songs, there will be a lot of 0's.
+Now that we have frequency of each word, we can make a tfdm frequency document matrix which will have columns as all the documents and rows as each word.  The matrix will be full of all the frequencies each word appears in each document, and considering all artists do not use all words in their songs, there will be a lot of 0's.
 ```{r tfdm, message=FALSE}
 tfdm <- frequency %>%
   select(document, word, freq) %>%

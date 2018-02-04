@@ -13,3 +13,6 @@ heatmaply
 RColorBrewer
 wordcloud
 bindrcpp
+twitteR
+NLP
+tm

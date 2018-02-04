@@ -11,3 +11,7 @@ navbar:
     href: songclustering.html
   - text: "Soc119Tweets"
     href: Soc119Tweets.html
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
