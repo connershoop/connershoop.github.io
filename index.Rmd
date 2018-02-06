@@ -9,6 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
  
-![Me and Stephen Sheetz hanging out in Mavora Lakes, New Zealand](NewZealandHut.jpg)
+![Building the SNIPE (Scanning Nanoscale Interface Probe Ensemble). Summer 2016](SNIPE.jpg)
  
 Welcome to my page.  I'm Conner Shoop.  I like working with large data sets from Kaggle and displaying findings in an easy-to-understand, visual way. I have worked on a few independent projects.  You can view and here on my github page. 
