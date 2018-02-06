@@ -2,12 +2,13 @@ name: "conners-website"
 output_dir: "."
 navbar:
   title: "Conners Website"
-  type: inverse
   left:
   - text: "Home"
     href: index.html
   - text: "About Me"
     href: about.html
+  - text: "Writing Sample"
+    href: electronRes.htm
   - text: "Projects"
     icon: glyphicon-wrench
     menu:
