@@ -8,7 +8,15 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
- 
-![Building the SNIPE (Scanning Nanoscale Interface Probe Ensemble). Summer 2016](SNIPE.jpg)
- 
+  
 Welcome to my page.  I'm Conner Shoop.  I like working with large data sets from Kaggle and displaying findings in an easy-to-understand, visual way. I have worked on a few independent projects.  You can view and here on my github page. 
+
+<center>
+Building the SNIPE (Scanning Nanoscale Interface Probe Ensemble). Summer 2016, Left to Right:(Bill Dusch, Me, Lavish Pabbi, Ivan Skachko) 
+![Building the SNIPE (Scanning Nanoscale Interface Probe Ensemble). Summer 2016, Left to Right:(Bill Dusch, Me, Lavish Pabbi, Ivan Skachko)](SNIPE.jpg)
+</center>
+<center>
+Finished SNIPE
+\newline 
+![Finished SNIPE](SNIPE2.jpg)
+</center>

@@ -1,6 +1,11 @@
 ---
 title: "About Me"
+output: html_document
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 ![Me and Stephen Sheetz hanging out in Mavora Lakes, New Zealand](NewZealandHut.jpg)
 
