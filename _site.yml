@@ -1,25 +1,22 @@
-name: conners-website
-output_dir: .
+name: "conners-website"
+output_dir: "."
 navbar:
-  title: Conners Website
+  title: "Conners Website"
   left:
-  - text: Home
+  - text: "Home"
     href: index.html
-  - text: About Me
+  - text: "About Me"
     href: about.html
-  - text: Writing Sample
+  - text: "Writing Sample"
     href: electronRes.htm
-  - text: Projects
+  - text: "Projects"
     icon: glyphicon-wrench
     menu:
-    - text: Song Clustering
-      href: songclustering.html
-    - text: Soc119Tweets
-      href: Soc119Tweets.html
+      - text: "Song Clustering"
+        href: songclustering.html
+      - text: "Soc119Tweets"
+        href: Soc119Tweets.html
 output:
   html_document:
     theme: cosmo
     highlight: textmate
-    lib_dir: site_libs
-    self_contained: no
-
