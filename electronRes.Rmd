@@ -1,0 +1,12 @@
+---
+title: "electronRes"
+author: "Conner Shoop"
+date: "3/10/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<img src="electronRes.pdf" alt="some text"  width="4200" height="4200">
+

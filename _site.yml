@@ -8,7 +8,7 @@ navbar:
   - text: "About Me"
     href: about.html
   - text: "Writing Sample"
-    href: electronRes.htm
+    href: electronRes.html
   - text: "Projects"
     icon: glyphicon-wrench
     menu:

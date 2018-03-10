@@ -185,7 +185,7 @@ $(document).ready(function () {
   <a href="about.html">About Me</a>
 </li>
 <li>
-  <a href="electronRes.htm">Writing Sample</a>
+  <a href="electronRes.html">Writing Sample</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -223,7 +223,14 @@ $(document).ready(function () {
 </div>
 
 
-<p>Here are some visualizations of Tweets submitted for credit in the class Sociology 119 here at Penn State. This is only tweets submitted in the week of 01/22/2018 - 01/29/2018.</p>
+<p>I have been using the Twitter API to take tweets submitted for credit in the class Sociology 119 here at Penn State. Here are some visualizations I’ve made of these tweets. I found the tweets by searching twitter for the #soc119 hashtag.</p>
+First here is a plot which builds by 1 frame = 1 day, showing tweets submitted in 10 minute intervals throughout the day.
+<div align="center">
+<p><iframe width="560" height="315" src="https://www.youtube.com/embed/KlRBaOJWltg"              frameborder="0" allowfullscreen> </iframe></p>
+</div>
+<p>Next is a plot showing all tweets submitted from January 22nd to March 4th, subsetted by day of the week (Mon to Sun) and put into 10 minute bins. I shouldn’t be surprised to see that the majority of the tweets are done Sunday night into Monday morning, right around the deadline. <img src="weeklyTweetFreqJan22toMar4.png" alt="All tweets submitted from January 22nd to March 4th, subsetted by day of the week (Mon to Sun) and put into 10 minute bins." /></p>
+<p>One of the more interesting thing I found on the Tweets’ seniment. It looks like, so far throughout the semester, there were two major events dictating the sentiment, as seen from this plot of cumulative sentiment. One brought it down and another brought it up. In this plot, each word is assigned a sentiment from the “afinn” sentiment dataset. Stop words (words like and, the, it, etc) are discarded. There is no normalization for an average sentiment based on all tweets, if there was a massive influx of negative tweets, the scale of the drop should account for that. I should also mention that I missed one day, January 29th, which accounts for the flat slope section. This graph is binned in 10 minute intervals. <img src="CumSentimentSoc119Jan22toMar4.png" alt="Cumulative senitment from Jan 22 to Mar 4, put into 10 minute bins." /></p>
+<p>The following plots are from tweets only submitted in the week of 01/22/2018 - 01/29/2018.</p>
 <p><img src="Soc119Jan22toJan29TweetFreq2018.jpg" alt="Submission frequency of tweets containing #soc119 from January 22, 2018 to January 29, 2018. Time step size: every 10 minutes." /> <img src="CumSentimentTweetsJan22toJan29.jpg" alt="Cumulative sentiment of tweets containing #soc119 from January 22, 2018 to January 29, 2018. Time step size: every 10 minutes. Sentiment source: afinn library. -5 to 5, negative to positive scale." /> <img src="SentimentTweetsJan22toJan29.jpg" alt="Sentiment of tweets containing #soc119 from January 22, 2018 to January 29, 2018. Time step size: every 10 minutes. Sentiment source: afinn library. -5 to 5, negative to positive scale." /> <img src="soc119Jan22toJan29wordcloudMinusPeople.jpg" alt="Wordcloud of words used in tweets containing #soc119 from January 22, 2018 to January 29, 2018. (excluding soc119, people, and stop words)" /></p>
 
 
