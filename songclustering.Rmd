@@ -1,13 +1,14 @@
 ---
-title: "Song Data to Term Frequency Inverse Document Matrix"
+title: "Song Lyrics used to Cluster Artists"
 output: html_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(cache=TRUE)
 ```
-After reading this case study I would highly recommend reading "Text Mining in R".  This is available online for free.  It gives an in depth overview of many of the methods I will be using.   
+In this case study we examine the lyrics of top songs by popular artists, which is contained in a datafile found on Kaggle. We try and group these artists into separate group. We create a term frequency inverse document matrix, which turns out to work the best for our application.
 
-In this case study we examine the lyrics of top songs by popular artists, which is contained in a datafile found on Kaggle. We will need some packages installed as well.
+After reading this case study I would highly recommend reading "Text Mining in R".  This is available online for free.  It gives an in depth overview of many of the methods I will be using.   
+First, we will need some packages installed
 ```{r packages, message=FALSE}
 library(readr)
 library(tidytext)
