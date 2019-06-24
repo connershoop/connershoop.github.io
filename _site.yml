@@ -1,23 +1,23 @@
 name: "conners-website"
 output_dir: "."
-##navbar:
-##  title: "Conners Website"
-  ##left:
-  ##- text: "Home"
-  ##  href: index.html
-  ##- text: "About Me"
-  ##  href: about.html
-  ##- text: "Writing Sample 1"
-  ##  href: sample1.html
-  ##- text: "Writing Sample 2"
-  ##  href: electronRes.htm
-  ##- text: "Projects"
-  ##  icon: glyphicon-wrench
-  ##  menu:
-  ##    - text: "Song Clustering"
-  ##      href: songclustering.html
-  ##    - text: "Soc119Tweets"
-  ##     href: Soc119Tweets.html
+navbar:
+  title: "Conners Website"
+  left:
+  - text: "Home"
+    href: index.html
+  - text: "About Me"
+    href: about.html
+  - text: "Writing Sample 1"
+    href: sample1.html
+  - text: "Writing Sample 2"
+    href: electronRes.htm
+  - text: "Projects"
+    icon: glyphicon-wrench
+    menu:
+      - text: "Song Clustering"
+        href: songclustering.html
+      - text: "Soc119Tweets"
+       href: Soc119Tweets.html
         
 output:
   html_document:
