@@ -9,10 +9,3 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
   
-Welcome to my page.  I'm Conner Shoop.  I like working with large data sets from Kaggle and displaying findings in an easy-to-understand, visual way. I have worked on a few independent projects.  You can view and here on my github page. 
-
-<div style="width:400px; height=200px">
-<center>
-![My brother owen (left) and I (right)](MeOwen.jpg)
-</center>
-</div>
