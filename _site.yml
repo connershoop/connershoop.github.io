@@ -9,7 +9,9 @@ navbar:
       - text: "Song Clustering"
         href: songclustering.html
       - text: "Soc119Tweets"
-       href: Soc119Tweets.html
+        href: Soc119Tweets.html
+      - text: "RandomWalk"
+        href: RandomWalk.html
         
 output:
   html_document:
